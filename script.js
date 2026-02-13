@@ -18,7 +18,8 @@ const photos = [
 const tileDefinitions = [
     { type: 'living_room', label: 'Living Room', color: '#decbb7', count: 1, category: 'indoor' },
     { type: 'kitchen', label: 'Kitchen', color: '#f7d08a', count: 1, category: 'indoor' },
-    { type: 'bedroom', label: 'Bedroom', color: '#e3d5ca', count: 3, category: 'indoor' },
+    { type: 'bedroom', label: 'Bedroom', color: '#e3d5ca', count: 1, category: 'indoor' },
+    { type: 'children_room', label: 'Children Room?', color: '#e3d5ca', count: 2, category: 'indoor' },
     { type: 'reading_room', label: 'Reading Room', color: '#8d7b68', count: 1, category: 'indoor' },
     { type: 'library', label: 'Library', color: '#5e503f', count: 1, category: 'indoor' },
     { type: 'office', label: 'Office', color: '#aab3ab', count: 1, category: 'indoor' },
@@ -30,12 +31,13 @@ const tileDefinitions = [
     { type: 'pottery_room', label: 'Pottery Room', color: '#c4a484', count: 1, category: 'indoor' },
     // Outdoor
     { type: 'tree', label: 'Tree', color: '#588157', count: 10, category: 'outdoor' },
+    { type: 'playground', label: 'Playground', color: '#a3b18a', count: 1, category: 'outdoor' },
     { type: 'swing', label: 'Swing', color: '#a3b18a', count: 1, category: 'outdoor' },
     { type: 'tree_cabin', label: 'Tree Cabin', color: '#3a5a40', count: 1, category: 'outdoor' },
-    { type: 'pond', label: 'Pond', color: '#457b9d', count: 1, category: 'outdoor' },
-    { type: 'grass_bees', label: 'Bees', color: '#ffea00', count: 4, category: 'outdoor' },
-    { type: 'flower_field', label: 'Flowers', color: '#ffb5a7', count: 4, category: 'outdoor' },
-    { type: 'veg_garden', label: 'Veg Garden', color: '#fcd5ce', count: 2, category: 'outdoor' },
+    { type: 'pond', label: 'Pond', color: '#457b9d', count: 2, category: 'outdoor' },
+    { type: 'grass_bees', label: 'Bees', color: '#ffea00', count: 2, category: 'outdoor' },
+    { type: 'flower_field', label: 'Flowers', color: '#ffb5a7', count: 2, category: 'outdoor' },
+    { type: 'veg_garden', label: 'Veg Garden', color: '#fcd5ce', count: 1, category: 'outdoor' },
     { type: 'herb_garden', label: 'Herbs', color: '#99d98c', count: 1, category: 'outdoor' }
 ];
 
@@ -182,7 +184,7 @@ function drawBorders() {
 
     state.placedTiles.forEach(tile => {
         const center = gridToPixel(tile.x, tile.y);
-        const half = TILE_SIZE / 2;
+        const half = TILE_SIZE / 2; // Slightly larger to cover gaps
 
         dirs.forEach(d => {
             const neighbor = state.placedTiles.find(t => t.x === tile.x + d.dx && t.y === tile.y + d.dy);
@@ -227,7 +229,7 @@ function drawBorders() {
 
                 ctx.strokeStyle = strokeColor;
                 ctx.lineWidth = lineWidth;
-                ctx.lineCap = 'butt'; // Butt cap for clean corners
+                ctx.lineCap = 'square'; // Extend line cap to cover corners
                 ctx.stroke();
             }
         });
@@ -449,7 +451,7 @@ function triggerFinale() {
     });
 
     yesBtn.addEventListener('click', () => {
-        alert("Yay! ❤️ Happy Valentine's Day!");
+        alert("Yay! ❤️ I love you!");
         modal.classList.add('hidden');
     });
 }
