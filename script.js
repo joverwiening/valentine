@@ -288,12 +288,22 @@ function initGame() {
     // Setup Intro Modal
     const introModal = document.getElementById('intro-modal');
     const startBtn = document.getElementById('start-btn');
-    startBtn.addEventListener('click', () => {
+    
+    // Explicit click handler for start button
+    function startGame() {
+        introModal.style.display = 'none'; // Force hide directly
         introModal.classList.add('hidden');
+        
         // Initial Hand (Draw 3 tiles if possible)
         drawFromDeck();
         drawFromDeck();
         drawFromDeck();
+    }
+
+    startBtn.addEventListener('click', startGame);
+    startBtn.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevent double firing on some touch devices
+        startGame();
     });
 }
 
