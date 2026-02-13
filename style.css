@@ -1,0 +1,170 @@
+:root {
+    --bg-color: #fcfbf7; /* Cream */
+    --sage-green: #9caf88;
+    --warm-brown: #8d7b68;
+    --soft-white: #ffffff;
+    --tray-bg: rgba(255, 255, 255, 0.9);
+    --font-main: 'Gaegu', cursive;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    font-family: var(--font-main);
+    color: var(--warm-brown);
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#game-canvas {
+    display: block;
+    background-color: #e6e8e3; /* Very light sage/grey for background */
+    cursor: grab;
+}
+
+#game-canvas:active {
+    cursor: grabbing;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Let clicks pass through to canvas */
+}
+
+#tile-tray {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--tray-bg);
+    padding: 15px 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 300px;
+    min-height: 120px;
+}
+
+#tile-tray h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+}
+
+#tiles-container {
+    display: flex;
+    gap: 15px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tile-ui {
+    width: 60px;
+    height: 60px;
+    background-color: var(--sage-green);
+    /* Remove clip-path for square */
+    border-radius: 4px; 
+    cursor: grab;
+    transition: transform 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+    user-select: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Add shadow for better visibility */
+}
+
+.tile-ui:hover {
+    transform: scale(1.1);
+}
+
+.tile-ui.dragging {
+    opacity: 0.5;
+}
+
+#tile-counter {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: var(--tray-bg);
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    pointer-events: auto;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: var(--soft-white);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    max-width: 400px;
+}
+
+.modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+button {
+    font-family: var(--font-main);
+    font-size: 1.5rem;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+#yes-btn {
+    background-color: var(--sage-green);
+    color: white;
+}
+
+#no-btn {
+    background-color: #d8a4a4;
+    color: white;
+    position: relative; /* For moving around */
+}
+
+button:hover {
+    transform: scale(1.05);
+}

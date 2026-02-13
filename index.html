@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Forest Framework</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-layer">
+            <div id="tile-tray">
+                <h3>Tile Tray</h3>
+                <div id="tiles-container">
+                    <!-- Tiles will be injected here -->
+                </div>
+            </div>
+            <div id="tile-counter">Tiles Placed: <span id="placed-count">0</span></div>
+        </div>
+    </div>
+
+    <div id="valentine-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Will you be my Valentine?</h2>
+            <p>You've built a beautiful world with me.</p>
+            <div class="modal-buttons">
+                <button id="yes-btn">Yes!</button>
+                <button id="no-btn">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
