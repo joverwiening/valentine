@@ -451,8 +451,13 @@ function triggerFinale() {
     });
 
     yesBtn.addEventListener('click', () => {
-        alert("Yay! ❤️ I love you!");
-        modal.classList.add('hidden');
+        // Clear modal content and show finale
+        const content = modal.querySelector('.modal-content');
+        content.innerHTML = `
+            <h2>Yay! ❤️</h2>
+            <img src="assets/finale.jpg" style="max-width: 100%; max-height: 60vh; border-radius: 10px; margin: 20px 0;" alt="Us">
+            <p style="font-size: 1.5rem; color: #d18c8c;">I love you</p>
+        `;
     });
 }
 
