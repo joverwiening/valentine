@@ -19,7 +19,7 @@ const tileDefinitions = [
     { type: 'living_room', label: 'Living Room', color: '#decbb7', count: 1, category: 'indoor' },
     { type: 'kitchen', label: 'Kitchen', color: '#f7d08a', count: 1, category: 'indoor' },
     { type: 'bedroom', label: 'Bedroom', color: '#e3d5ca', count: 1, category: 'indoor' },
-    { type: 'children_room', label: 'Children Room?', color: '#e3d5ca', count: 2, category: 'indoor' },
+    { type: 'children_room', label: 'Children Room', color: '#e3d5ca', count: 2, category: 'indoor' },
     { type: 'reading_room', label: 'Reading Room', color: '#8d7b68', count: 1, category: 'indoor' },
     { type: 'library', label: 'Library', color: '#5e503f', count: 1, category: 'indoor' },
     { type: 'office', label: 'Office', color: '#aab3ab', count: 1, category: 'indoor' },
@@ -276,16 +276,32 @@ function initGame() {
     // Initial Center Tile (Generic Start)
     placeTile(0, 0, { type: 'start', label: 'Hearth', color: '#d18c8c', category: 'indoor' });
 
-    // Initial Hand (Draw 3 tiles if possible)
-    drawFromDeck();
-    drawFromDeck();
-    drawFromDeck();
+
+    // Initial Hand - Logic moved to Start Button
+    // drawFromDeck();
+    // drawFromDeck();
+    // drawFromDeck();
 
     resize();
     updateUI();
+
+    // Setup Intro Modal
+    const introModal = document.getElementById('intro-modal');
+    const startBtn = document.getElementById('start-btn');
+    startBtn.addEventListener('click', () => {
+        introModal.classList.add('hidden');
+        // Initial Hand (Draw 3 tiles if possible)
+        drawFromDeck();
+        drawFromDeck();
+        drawFromDeck();
+    });
 }
 
 function drawFromDeck() {
+    // Limit tray size to 3 to prevent overflow duplication issues
+    const currentTrayCount = document.getElementById('tiles-container').childElementCount;
+    if (currentTrayCount >= 3) return;
+
     if (state.availableTiles.length > 0) {
         const tile = state.availableTiles.pop();
         addTileToTray(tile);
