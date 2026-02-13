@@ -353,6 +353,23 @@ function addTileToTray(tileData) {
         draw(); // Clear ghost
     });
 
+    // Touch Support for Mobile Drag & Drop
+    el.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent scrolling
+        state.draggedTile = tileData;
+        el.classList.add('dragging');
+        
+        // Create a visual clone to follow finger
+        const touch = e.touches[0];
+        // We'll use the existing global drag tracking or create a temporary element
+    }, {passive: false});
+
+    el.addEventListener('touchend', (e) => {
+        // Handled in window touchend or similar
+        // Just cleanup style here if needed
+        el.classList.remove('dragging');
+    });
+
     tilesContainer.appendChild(el);
 }
 
@@ -364,16 +381,69 @@ function updateUI() {
 
 
 // Canvas Interaction for Snapping
-canvas.addEventListener('dragover', (e) => {
-    e.preventDefault(); // Allow dropping
-    e.dataTransfer.dropEffect = 'move';
-    
+function handleMove(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    const mouseX = clientX - rect.left;
+    const mouseY = clientY - rect.top;
 
     state.hoveredGridPos = pixelToGrid(mouseX, mouseY);
     draw();
+}
+
+canvas.addEventListener('dragover', (e) => {
+    e.preventDefault(); // Allow dropping
+    e.dataTransfer.dropEffect = 'move';
+    handleMove(e.clientX, e.clientY);
+});
+
+// Global Touch Handlers (Combined for Dragging & Panning)
+window.addEventListener('touchmove', (e) => {
+    // 1. Handling Tile Dragging
+    if (state.draggedTile) {
+        e.preventDefault(); // Prevent scrolling while dragging tile
+        const touch = e.touches[0];
+        handleMove(touch.clientX, touch.clientY);
+        return;
+    }
+
+    // 2. Handling Canvas Panning (if started)
+    if (isPanning && e.touches.length === 1) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const dx = touch.clientX - panStart.x;
+        const dy = touch.clientY - panStart.y;
+        state.camera.x += dx;
+        state.camera.y += dy;
+        panStart = { x: touch.clientX, y: touch.clientY };
+        draw();
+    }
+}, {passive: false});
+
+window.addEventListener('touchend', (e) => {
+    if (state.draggedTile && state.hoveredGridPos) {
+        const { x, y } = state.hoveredGridPos;
+        
+        if (x !== undefined && y !== undefined && isValidPlacement(x, y)) {
+            placeTile(x, y, state.draggedTile);
+            
+            // Remove the actual element from tray
+            // We need to match by reference or ID. 
+            // Since we don't have IDs, we'll look for dragging class
+            const draggedEl = document.querySelector('.tile-ui.dragging');
+            if (draggedEl) draggedEl.remove();
+            
+            checkProgression();
+        }
+    }
+    
+    // Cleanup
+    if (state.draggedTile) {
+        const draggedEl = document.querySelector('.tile-ui.dragging');
+        if (draggedEl) draggedEl.classList.remove('dragging');
+        state.draggedTile = null;
+        state.hoveredGridPos = null;
+        draw();
+    }
 });
 
 canvas.addEventListener('drop', (e) => {
@@ -431,6 +501,23 @@ window.addEventListener('mousemove', (e) => {
 window.addEventListener('mouseup', () => {
     isPanning = false;
 });
+
+// Touch Panning
+canvas.addEventListener('touchstart', (e) => {
+    if (!state.draggedTile && e.touches.length === 1) {
+        isPanning = true;
+        panStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+}, {passive: false});
+
+// Note: touchmove is handled in window listener above to support dragging tiles outside canvas,
+// but we need to handle panning here if NOT dragging tile
+// Modify global touchmove slightly:
+
+/* 
+   We already have window.touchmove above. Let's consolidate them or modify that one.
+   Since I can't restart tool calls mid-flight easily, I will edit the existing window listener via replacement.
+*/
 
 
 // Finale Logic
