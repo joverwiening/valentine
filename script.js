@@ -48,7 +48,8 @@ let state = {
     camera: { x: 0, y: 0, zoom: 1 },
     isDragging: false,
     dragStart: { x: 0, y: 0 },
-    draggedTile: null, // The tile currently being dragged from UI
+    draggedTile: null, // The tile data currently being dragged
+    draggedElement: null, // The DOM element being dragged (for removal)
     hoveredGridPos: null // Grid coordinate under mouse
 };
 
@@ -357,18 +358,12 @@ function addTileToTray(tileData) {
     el.addEventListener('touchstart', (e) => {
         e.preventDefault(); // Prevent scrolling
         state.draggedTile = tileData;
+        state.draggedElement = el; // Store reference
         el.classList.add('dragging');
-        
-        // Create a visual clone to follow finger
-        const touch = e.touches[0];
-        // We'll use the existing global drag tracking or create a temporary element
     }, {passive: false});
 
-    el.addEventListener('touchend', (e) => {
-        // Handled in window touchend or similar
-        // Just cleanup style here if needed
-        el.classList.remove('dragging');
-    });
+    // Remove local touchend to avoid race condition with global handler
+    // el.addEventListener('touchend', ...); 
 
     tilesContainer.appendChild(el);
 }
@@ -427,10 +422,14 @@ window.addEventListener('touchend', (e) => {
             placeTile(x, y, state.draggedTile);
             
             // Remove the actual element from tray
-            // We need to match by reference or ID. 
-            // Since we don't have IDs, we'll look for dragging class
-            const draggedEl = document.querySelector('.tile-ui.dragging');
-            if (draggedEl) draggedEl.remove();
+            // Since we stored the specific element in state, use that
+            if (state.draggedElement) {
+                state.draggedElement.remove();
+            } else {
+                // Fallback
+                const draggedEl = document.querySelector('.tile-ui.dragging');
+                if (draggedEl) draggedEl.remove();
+            }
             
             checkProgression();
         }
@@ -438,9 +437,15 @@ window.addEventListener('touchend', (e) => {
     
     // Cleanup
     if (state.draggedTile) {
-        const draggedEl = document.querySelector('.tile-ui.dragging');
-        if (draggedEl) draggedEl.classList.remove('dragging');
+        if (state.draggedElement) {
+             state.draggedElement.classList.remove('dragging');
+        } else {
+             const draggedEl = document.querySelector('.tile-ui.dragging');
+             if (draggedEl) draggedEl.classList.remove('dragging');
+        }
+        
         state.draggedTile = null;
+        state.draggedElement = null;
         state.hoveredGridPos = null;
         draw();
     }
