@@ -28,6 +28,7 @@ body, html {
     display: block;
     background-color: #e6e8e3; /* Very light sage/grey for background */
     cursor: grab;
+    touch-action: none; /* Critical for mobile pan */
 }
 
 #game-canvas:active {
@@ -88,7 +89,8 @@ body, html {
     font-weight: bold;
     font-size: 0.8rem;
     user-select: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Add shadow for better visibility */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    touch-action: none; /* Critical for mobile drag */
 }
 
 .tile-ui:hover {
